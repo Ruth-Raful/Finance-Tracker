@@ -1,0 +1,39 @@
+.selected-category-box {
+  margin-top: 10px;
+  font-weight: bold;
+  direction: rtl;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: #141e36; // רקע כהה
+  color: #fff; // טקסט לבן
+  padding: 10px 16px;
+  border-radius: 10px;
+  width: fit-content;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+
+  span {
+    font-size: 14px;
+  }
+
+  .remove-btn{
+    background: none;
+    cursor: pointer;
+    color: #4fc3f7; // צבע האייקון תכלת
+    width: 26px;
+    height: 26px;
+    border: none;
+    text-align: center;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 50%;
+    transition: 0.2s;
+
+    &:hover {
+      background: #4fc3f7;
+      color: #141e36;
+    }
+  }
+
+}
+

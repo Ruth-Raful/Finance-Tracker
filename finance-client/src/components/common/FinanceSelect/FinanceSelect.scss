@@ -15,6 +15,43 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &:hover {
+      border-color: var(--brand);
+    }
+
+    &:focus-within {
+      border-color: var(--brand);
+      box-shadow: 0 0 0 4px var(--ring);
+      outline: none;
+    }
+
+    .arrow {
+      transition: transform 0.2s ease;
+
+      &.open {
+        transform: rotate(180deg);
+      }
+    }
+  }
+
+  /* כאן אנחנו מיישרים את העיצוב של האינפוט לזה של האב */
+  .search-input {
+    all: unset;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.05);
+    color: white;
+    font-size: 16px;
+    box-sizing: border-box;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.6);
+    }
 
     &:hover {
       border-color: var(--brand);
@@ -25,56 +62,64 @@
       box-shadow: 0 0 0 4px var(--ring);
       outline: none;
     }
+  }
 
-    .arrow {
-      transition: transform 0.2s ease;
-      &.open {
-        transform: rotate(180deg);
+  .finance-options {
+    position: absolute;
+    top: calc(100% + 4px);
+    width: 100%;
+    max-height: 200px;
+    overflow-y: auto;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    background: var(--panel);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    z-index: 10;
+
+    &::-webkit-scrollbar {
+      width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.05);
+      border-radius: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: var(--brand);
+      border-radius: 12px;
+    }
+
+    &::-webkit-scrollbar-thumb:hover {
+      background: var(--brand-2);
+    }
+
+    li {
+      padding: 10px;
+      color: var(--text);
+
+      &:hover {
+        background: rgba(76, 196, 255, 0.1);
       }
     }
   }
 
-.finance-options {
-  position: absolute;
-  top: calc(100% + 4px);
-  width: 100%;
-  max-height: 200px;
-  overflow-y: auto;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 12px;
-  background: var(--panel);
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  z-index: 10;
-
-  /* Scrollbar custom */
-  &::-webkit-scrollbar {
-    width: 8px;
+  input[type="checkbox"] {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
   }
+  
 
-  &::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.05);
-    border-radius: 12px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background: var(--brand);
-    border-radius: 12px;
-  }
-
-  &::-webkit-scrollbar-thumb:hover {
-    background: var(--brand-2);
-  }
-
-  li {
-    padding: 10px;
-    color: var(--text);
-
-    &:hover {
-      background: rgba(76, 196, 255, 0.1);
-    }
-  }
+  .no-results {
+  padding: 10px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.8);
+  font-size: 14px;
+  background: rgba(255, 255, 255, 0.05);
+  border-radius: 8px;
 }
-
 }

@@ -8,6 +8,7 @@ import {
 
 import TransactionForm from 'components/transaction/transactionForm/transactionForm';
 import TransactionsTable from 'components/transaction/transactionsTable/transactionsTable';
+// import MultiSelectExample from 'components/transaction/transactionsTable/MultiSelectExample';
 import ExpenseCategoryChart from 'components/transaction/TransactionCharts/ExpenseCategoryChart';
 import TransactionChart from 'components/transaction/TransactionCharts/TransactionChart';
 import { Wallet, ArrowDownCircle, PiggyBank } from "lucide-react";

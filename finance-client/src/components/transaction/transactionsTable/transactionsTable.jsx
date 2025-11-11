@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
-import { Pencil, Trash2, Sliders, Download } from 'lucide-react'; // אייקונים
+import { Pencil, Trash2, Sliders, Download } from 'lucide-react';
 import FinanceSelect from "components/common/FinanceSelect/FinanceSelect";
+import FinanceSelectBox from "components/common/FinanceSelectBox/FinanceSelectBox";
 import './transactionsTable.scss';
 
+// ייצוא לקובץ אקסל
 const exportToExcel = (transactions) => {
   const filteredData = transactions.map(({ _id, type, sum, date, categoryLabel }) => ({
     Type: type,
@@ -24,15 +26,16 @@ const exportToExcel = (transactions) => {
 
 const TransactionsTable = ({ transactions, onDelete, onEdit }) => {
   const [typeFilter, setTypeFilter] = useState('');
-  const [categoryFilter, setCategoryFilter] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState([]); // מערך – לבחירה מרובה
   const [expenseCategories, setExpenseCategories] = useState([]);
   const [showFilters, setShowFilters] = useState(false);
+
   const typeLabels = {
     income: 'הכנסה',
     expense: 'הוצאה',
   };
 
-  // יוצרים מערך ייחודי של קטגוריות עם value באנגלית ו-label בעברית
+  // הפקת רשימת קטגוריות ייחודיות לפי סוג
   useEffect(() => {
     if (typeFilter === 'expense') {
       const categoriesWithValue = Array.from(
@@ -44,37 +47,45 @@ const TransactionsTable = ({ transactions, onDelete, onEdit }) => {
       setExpenseCategories(categoriesWithValue);
     } else {
       setExpenseCategories([]);
-      setCategoryFilter('');
+      setCategoryFilter([]);
     }
   }, [typeFilter, transactions]);
 
+  // סינון הנתונים לתצוגה
   const filteredTransactions = transactions.filter(tx => {
     if (typeFilter && tx.type !== typeFilter) return false;
-    if (typeFilter === 'expense' && categoryFilter && tx.category !== categoryFilter) return false;
+    if (typeFilter === 'expense' && categoryFilter.length > 0 && !categoryFilter.includes(tx.category)) {
+      return false;
+    }
     return true;
   });
 
   return (
-
     <div className="transactions-table-container">
 
-
-
-
-
-      {/* טבלת טרנזקציות */}
       <h2 className="title mt-4">כל הפעולות שלי</h2>
 
-            {/* כפתור להציג/להסתיר פילטר */}
+      {/* כפתור הצגת פילטרים */}
       <button
         className="filter-toggle-btn"
         onClick={() => setShowFilters(!showFilters)}
       >
         <Sliders size={20} /> פילטרים
       </button>
-            {showFilters && (
+
+      {/* תיבת תצוגת קטגוריות שנבחרו */}
+      <FinanceSelectBox
+        categoryFilter={categoryFilter}
+        expenseCategories={expenseCategories}
+        onClear={() => setCategoryFilter([])}
+        onRemove={(category) => {
+          setCategoryFilter(prev => prev.filter(cat => cat !== category));
+        }}
+      />
+
+      {showFilters && (
         <div className="filters-panel">
-          {/* סינון לפי סוג */}
+          {/* סינון לפי סוג טרנזקציה */}
           <div className="filter-group">
             <label htmlFor="sort">הצג רק:</label>
             <FinanceSelect
@@ -90,21 +101,24 @@ const TransactionsTable = ({ transactions, onDelete, onEdit }) => {
             />
           </div>
 
-          {/* סינון לפי קטגוריה רק להוצאות */}
+          {/* סינון לפי קטגוריה (לבחירה מרובה) */}
           {typeFilter === 'expense' && (
             <div className="filter-group">
               <label htmlFor="categorySort">קטגוריה:</label>
               <FinanceSelect
+                multiple
                 id="categorySort"
                 value={categoryFilter}
                 onChange={(val) => setCategoryFilter(val)}
-                options={expenseCategories} // כאן {value, label}
+                options={expenseCategories}
                 placeholder="כל ההוצאות"
               />
             </div>
           )}
         </div>
       )}
+
+      {/* תצוגת נתונים */}
       {filteredTransactions.length === 0 ? (
         <div className="no-data-message">
           <p>אין נתונים להצגה</p>
@@ -124,15 +138,12 @@ const TransactionsTable = ({ transactions, onDelete, onEdit }) => {
             {filteredTransactions.map(tx => (
               <tr key={tx._id}>
                 <td>
-                  <span className={`tag ${tx.type}`}>{typeLabels[tx.type] || tx.type}</span>
-
+                  <span className={`tag ${tx.type}`}>
+                    {typeLabels[tx.type] || tx.type}
+                  </span>
                 </td>
                 <td>₪{tx.sum}</td>
-                <td>
-                  {tx.date
-                    ? new Date(tx.date).toLocaleDateString('he-IL') // יום/חודש/שנה
-                    : ''}
-                </td>
+                <td>{tx.date ? new Date(tx.date).toLocaleDateString('he-IL') : ''}</td>
                 <td>{tx.categoryLabel}</td>
                 <td className="actions">
                   <button
@@ -155,15 +166,17 @@ const TransactionsTable = ({ transactions, onDelete, onEdit }) => {
           </tbody>
         </table>
       )}
+
+      {/* כפתור ייצוא */}
       <div className='export-container'>
         <button
           onClick={() => exportToExcel(filteredTransactions)}
-          className="btn btn-primary export-btn">
+          className="btn btn-primary export-btn"
+        >
           <Download size={16} />
           ייצוא לאקסל
         </button>
       </div>
-
     </div>
   );
 };
